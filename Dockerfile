@@ -1,23 +1,18 @@
-# استفاده از Node.js 18 رسمی
 FROM node:18-bullseye
 
-# نصب ffmpeg و پاکسازی کش apt برای کاهش حجم
+# نصب ffmpeg و build tools
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y ffmpeg build-essential python3 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# دایرکتوری کاری
 WORKDIR /app
 
-# کپی فایل‌های پروژه
 COPY package.json .
 COPY server.js .
 
-# نصب وابستگی‌ها
-RUN npm install --production
+# نصب تمام dependencyها
+RUN npm install
 
-# expose پورت 3000
 EXPOSE 3000
 
-# اجرای سرور
 CMD ["node", "server.js"]
